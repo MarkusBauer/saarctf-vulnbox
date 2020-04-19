@@ -51,7 +51,6 @@ In a third final step, vulnbox is built, based on the plain debian image and the
 Customizing the vulnbox
 -----------------------
 - In any case you should create a **new SSH key** and move it to `ssh/saarctf[.pub]`. 
-  Don't forget to replace the public key in `scripts/80_system_config.sh`!
 - The greeting frontpage can be edited in `/frontpage` and `/frontpage-testbox`.
 - The general structure of build steps is in `vulnbox.yaml` and can be modified.
 - Meta information of all VMs are in `/*.yaml`. 
