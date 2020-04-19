@@ -1,0 +1,8 @@
+*.ova
+output-*
+packer_cache
+/output/
+/README.html
+/.idea/
+/.build_cache/
+.tmp-*.json

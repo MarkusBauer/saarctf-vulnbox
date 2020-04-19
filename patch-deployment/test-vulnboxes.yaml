@@ -1,0 +1,14 @@
+---
+all:
+  # global variables valid for all hosts
+  vars:
+    ansible_user: root # specify the username used by ansible to connect to remote hosts
+  children:
+    vulnboxes:
+      hosts:
+        10.32.1.2:
+          ansible_ssh_private_key_file: ~/.ssh/saarctf
+      # variables valid for all hosts in vulnboxes
+      # vars:
+      #   ntp_server: 10.32.250.1
+...

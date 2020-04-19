@@ -1,0 +1,69 @@
+// lessc -x style.less style.min.css
+
+@headerheight: 130px;
+@aspect-width: 1060;
+@aspect-height: 882;
+
+
+/* Aspect-keeping image container */
+.image-container-1 {
+	margin: 0 auto;
+	max-width: calc((100vh*@aspect-width/@aspect-height)~" - "(@headerheight*@aspect-width/@aspect-height));
+}
+
+.image-container-2 {
+	padding-bottom: 100% * @aspect-height / @aspect-width;
+	position: relative;
+}
+
+.image-container-3 {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+// Image + Markers
+.image-container {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.2);
+
+	> img {
+		width: 100%;
+	}
+	> .marker {
+		position: absolute;
+		display: block;
+		background-color: #007bff;
+		border: 1px solid #025b95;
+		min-width: 12px;
+		min-height: 12px;
+		border-radius: 7px;
+		margin-top: -7px;
+		margin-left: -7px;
+	}
+	> .panel {
+		position: absolute;
+		width: 21%;
+		opacity: 0.95;
+
+		> img {
+			width: 100%;
+		}
+
+		.panel-img-overlay {
+			padding: 1px 15px;
+			color: #fff;
+			background-color: rgba(0, 0, 0, 0.6);
+			position: absolute;
+			width: 100%;
+			bottom: 0;
+		}
+		.panel-heading {
+			padding: 5px 15px;
+		}
+	}
+}

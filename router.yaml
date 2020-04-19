@@ -1,0 +1,60 @@
+---
+
+builders:
+  - type: virtualbox-ovf
+    source_path: "./debian/output/saarctf-vulnbox-base.ova"
+    boot_command:
+      - "<enter>"
+    ssh_username: root
+    ssh_password: '123456789'
+    shutdown_command: echo 'packer' | shutdown -P now
+    export_opts:
+      - "--manifest"
+      - "--vsys"
+      - '0'
+      - "--description"
+      - SaarCTF 2020 Router (powered by saarsec)
+      - "--version"
+      - 0.0.1 alpha
+    output_directory: output-router
+    vm_name: saarctf-router
+    format: ova
+    guest_additions_mode: disable
+    vboxmanage:
+      - ["modifyvm", "{{.Name}}", "--memory", "1024"]
+      - ["modifyvm", "{{.Name}}", "--vram", "16"]
+      - ["modifyvm", "{{.Name}}", "--cpus", "1"]
+      - ["modifyvm", "{{.Name}}", "--nic1", "nat"]
+      - ["modifyvm", "{{.Name}}", "--nic2", "bridged"]
+      - ["modifyvm", "{{.Name}}", "--bridgeadapter2", "ANY_INTERFACE"]
+      - ["modifyvm", "{{.Name}}", "--natpf1", "ssh,tcp,127.0.0.1,22222,,22"]
+      - ["modifyvm", "{{.Name}}", "--natpf1", "OpenVPN for Team-Members,udp,0.0.0.0,1194,,1194"]
+    #vboxmanage_before_export:
+      #- ["modifyvm", "{{.Name}}", "--bridgeadapter2", "none"]
+    keep_registered: true
+    headless: true
+
+# TODO DISK SIZE
+
+provisioners:
+  - type: apt-cacher-ng  # Configure cache if present on host
+
+  - type: shell
+    scripts:
+      - "./scripts/10_basics.sh"
+      - "./scripts/15_nginx.sh"
+      - "./scripts/20_router.sh"
+
+  - type: file
+    source: router-setup-scripts/
+    destination: "/root/"
+
+  - type: file
+    source: ssh/saarctf.pub
+    destination: /tmp/saarctf.pub
+
+  - type: shell
+    scripts:
+      - "./scripts/80_system_config.sh"
+      - "./scripts/81_router_config.sh"
+      - "./scripts/90_cleanup.sh"

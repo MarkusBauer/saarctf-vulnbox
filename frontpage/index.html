@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>saarCTF 2020</title>
+	<link rel="stylesheet" href="index.css">
+	<link rel="stylesheet" href="style.min.css">
+</head>
+<body>
+<div class="bg-primary-theme">
+	<div class="container-fluid">
+		<h1 class="page-header">Welcome to saarCTF 2020</h1>
+	</div>
+	<br />
+</div>
+
+<!--
+	https://de.wikipedia.org/wiki/Liste_der_Ober-_und_Mittelzentren_im_Saarland
+-->
+<div class="image-container-1">
+<div class="image-container-2">
+<div class="image-container-3">
+<div class="image-container">
+	<img src="saarland.svg">
+
+	<a href=":9080/" target="_blank" class="marker" style="left: 85.5%; top: 58.5%"></a>
+	<a href=":9080/" target="_blank" class="panel panel-primary" style="top: 60%; right: 2%">
+		<div class="panel-heading">
+			Schlossberg Caves
+		</div>
+		<img src="schlossberg.jpg" class="img-responsive">
+		<div class="panel-img-overlay">
+			Homburg
+		</div>
+	</a>
+
+	<a href=":8080/" target="_blank" class="marker" style="left: 20%; top: 30.5%"></a>
+	<a href=":8080/" target="_blank" class="panel panel-primary" style="left: 7%; top: 32.5%">
+		<div class="panel-heading">
+			saarschleife.net
+		</div>
+		<img src="saarschleife.jpg" class="img-responsive">
+		<div class="panel-img-overlay">
+			Mettlach
+		</div>
+	</a>
+
+
+	<a href="#" onclick="stahl()" class="marker" style="left: 45%; top: 70%"></a>
+	<a href="#" onclick="stahl()" class="panel panel-primary" style="left: 20%; top: 70%">
+		<div class="panel-heading">
+			stahl4
+		</div>
+		<img src="stahl4.jpg" class="img-responsive">
+		<div class="panel-img-overlay">
+			V&ouml;lklingen
+		</div>
+	</a>
+
+
+	<a href="/mensaar/" target="_blank" class="marker" style="left: 58%; top: 68%"></a>
+	<a href="/mensaar/" target="_blank" class="panel panel-primary" style="left: 49%; top: 73%">
+		<div class="panel-heading">
+			MenSaar
+		</div>
+		<img src="mensaar.jpg" class="img-responsive">
+		<div class="panel-img-overlay">
+			Saarbr&uuml;cken
+		</div>
+	</a>
+
+
+	<a href=":1337/" target="_blank" class="marker" style="left: 65%; top: 30%"></a>
+	<a href=":1337/" target="_blank" class="panel panel-primary" style="left: 60%; top: 8.5%">
+		<div class="panel-heading">
+			saarlendar
+		</div>
+		<img src="saarlendar.jpg" class="img-responsive">
+		<div class="panel-img-overlay">
+			St. Wendel
+		</div>
+	</a>
+
+
+	<a href="#" onclick="schwenker()" class="marker" style="left: 68%; top: 65%"></a>
+	<a href="#" onclick="schwenker()" class="panel panel-primary" style="left: 53%; top: 43%">
+		<div class="panel-heading">
+			Let's Schwenkrypt
+		</div>
+		<img src="schwenker.jpg" class="img-responsive">
+		<div class="panel-img-overlay">
+			St. Ingbert
+		</div>
+	</a>
+	
+
+	<a href=":5000/" target="_blank" class="panel panel-primary" style="left: 33%; top: 20%">
+		<div class="panel-heading">
+			saarXiv
+		</div>
+		<img src="saarxiv.jpg" class="img-responsive">
+		<div class="panel-img-overlay">
+			Saarbr&uuml;cken
+		</div>
+	</a>
+</div>
+</div>
+</div>
+</div>
+
+
+<!--<br /><br /><br />
+
+<div style="background-color: #007bff; width: 50px; height: 30px; display: inline-block;"></div> <code>#007bff</code><br />
+<div style="background-color: #009cc4; width: 50px; height: 30px; display: inline-block;"></div> <code>#009cc4</code><br />
+<div style="background-color: #025b95; width: 50px; height: 30px; display: inline-block;"></div> <code>#025b95</code><br />
+<div style="background-color: #212529; width: 50px; height: 30px; display: inline-block;"></div> <code>#212529</code><br />
+<div style="background-color: #28a745; width: 50px; height: 30px; display: inline-block;"></div> <code>#28a745</code><br />
+<div style="background-color: #868e96; width: 50px; height: 30px; display: inline-block;"></div> <code>#868e96</code><br />
+<div style="background-color: #bd4147; width: 50px; height: 30px; display: inline-block;"></div> <code>#bd4147</code><br />
+<div style="background-color: #dc3545; width: 50px; height: 30px; display: inline-block;"></div> <code>#dc3545</code><br />
+<div style="background-color: #e9ecef; width: 50px; height: 30px; display: inline-block;"></div> <code>#e9ecef</code><br />
+<div style="background-color: #f8f9fa; width: 50px; height: 30px; display: inline-block;"></div> <code>#f8f9fa</code><br />
+<div style="background-color: #ffc107; width: 50px; height: 30px; display: inline-block;"></div> <code>#ffc107</code><br />
+-->
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+	var elements = document.getElementsByTagName('a');
+	for (var i = 0; i < elements.length; i++) {
+		var e = elements[i];
+		if (e.attributes.href.value.charAt(0) == ':') {
+			e.href = location.protocol+'//'+location.host + e.attributes.href.value;
+		}
+	}
+}, false);
+
+function stahl() {
+	alert('Try: nc '+location.host+' 21485');
+}
+
+function schwenker() {
+	alert('Try: nc '+location.host+' 4711');
+}
+</script>
+</body>
+</html>
