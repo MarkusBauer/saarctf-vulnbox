@@ -1,0 +1,36 @@
+{
+  "variables": {
+    "archive_file": "output-vulnbox/saarctf-vulnbox.tar.xz"
+  },
+  "builders": [
+    {
+      "type": "hcloud",
+      "image": "debian-10",
+      "location": "fsn1",
+      "server_type": "cx11",
+      "server_name": "vulnbox",
+      "snapshot_name": "vulnbox",
+      "poll_interval": "1000ms",
+      "ssh_username": "root",
+      "rescue": "linux64"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "cloudhosting-scripts/",
+      "destination": "/dev/shm"
+    },
+    {
+      "type": "file",
+      "source": "{{user `archive_file`}}",
+      "destination": "/dev/shm/bundle.tar.xz"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "/dev/shm/install_bundle_for_orgahosted_cloud.sh /dev/shm/bundle.tar.xz"
+      ]
+    }
+  ]
+}

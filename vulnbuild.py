@@ -35,6 +35,15 @@ def assert_docker():
 
 
 @cache_result
+def assert_podman():
+	try:
+		subprocess.check_call(['podman', 'ps'], stdout=subprocess.DEVNULL, timeout=10)
+	except subprocess.CalledProcessError:
+		print('Podman is required in order to build this image. Please podman docker.', file=sys.stderr)
+		sys.exit(1)
+
+
+@cache_result
 def assert_packer():
 	try:
 		subprocess.check_call(['packer', '--version'], stdout=subprocess.DEVNULL, timeout=10)
@@ -386,6 +395,56 @@ class BuildScript:
 		print(f'[*] Created image "{ova_file}"')
 
 
+class PodmanBuilder:
+	def __init__(self):
+		self.services: List[Service] = []
+		self.output = BASEPATH + '/output-podman/vulnbox-image.tar'
+		self.output2 = BASEPATH + '/output-podman/vulnbox-image-compressed.tar'
+
+	def set_services(self, services: List[Service]):
+		self.services = services
+
+	def build(self):
+		with open(BASEPATH + '/podman/template.Dockerfile', 'r') as f:
+			dockerfile = f.read()
+		# Create dockerfile with added service install commands
+		dockerfile2 = []
+		for line in dockerfile.split('\n'):
+			if not line.startswith('# PATCH'):
+				dockerfile2.append(line)
+			else:
+				for service in self.services:
+					dockerfile2.append(f'# Service {service.name}')
+					assert (service.get_cached_dir().startswith(BASEPATH + '/'))
+					dockerfile2.append(f'COPY {service.get_cached_dir()[len(BASEPATH) + 1:]} /tmp/{os.path.basename(service.get_cached_dir())}')
+					commands = [
+						f'echo "===== Installing service ${service.name} ... ====="',
+						f'cd /tmp/{service.name}',
+						'. ./gamelib/ci/buildscripts/prepare-install.sh',
+						'./install.sh',
+						'./gamelib/ci/buildscripts/post-install.sh',
+						'cd /',
+						f'rm -rf /tmp/{service.name}'
+					]
+					dockerfile2.append('RUN bash -c \'\\' + ' && \\\n    '.join(commands) + "'")
+		# write final Dockerfile
+		with open(BASEPATH + '/podman/final.Dockerfile', 'w') as f:
+			f.write('\n'.join(dockerfile2))
+		# build with context
+		cmd = ['podman', 'build', '-t', 'vulnbox-image', '-f', 'podman/final.Dockerfile', BASEPATH]
+		subprocess.check_call(cmd, cwd=BASEPATH)
+		os.makedirs(BASEPATH + '/output-podman', exist_ok=True)
+		if os.path.exists(self.output):
+			os.remove(self.output)
+		if os.path.exists(self.output2):
+			os.remove(self.output2)
+		subprocess.check_call(['podman', 'save', '-o', self.output, 'vulnbox-image'])
+		subprocess.check_call(['podman', 'create', '--name=vulnbox-image-tmp', 'vulnbox-image'])
+		subprocess.check_call(['podman', 'export', '-o', self.output2, 'vulnbox-image-tmp'])
+		# Import: podman import <tarball> <image-name>
+		subprocess.check_call(['podman', 'rm', 'vulnbox-image-tmp'])
+
+
 BASEPATH = os.path.dirname(os.path.abspath(__file__))
 SERVICES = [Service(os.path.dirname(f)) for f in glob.glob(os.path.join(BASEPATH, 'services', '*', 'install.sh'))]
 VULNSCRIPT = os.path.join(BASEPATH, 'vulnbox.yaml')
@@ -417,11 +476,15 @@ def main():
 	parser_prepare_debian = subparsers.add_parser('prepare-debian', help='Prepare the OS image')
 	parser_prepare_debian.add_argument('--rebuild', action='store_true', help='Rebuild image even if cached image exists')
 
-	parser_build = subparsers.add_parser('build', help='Build the vulnbox')
+	parser_build = subparsers.add_parser('build', help='Build the vulnbox as VM image')
 	parser_build.add_argument('image_name', type=str, nargs='?', default='vulnbox', help='Which box to build (vulnbox, testbox, router)')
 	parser_build.add_argument('services', type=str, nargs='*', help='services to include')
 	parser_build.add_argument('--rebuild', action='store_true', help='Rebuild services even if cached build exists')
 	parser_build.add_argument('--rebuild-debian', action='store_true', help='Rebuild base image even if cached image exists')
+
+	parser_podman = subparsers.add_parser('build-podman', help='Build the vulnbox as podman image')
+	parser_podman.add_argument('services', type=str, nargs='*', help='services to include')
+	parser_podman.add_argument('--rebuild', action='store_true', help='Rebuild services even if cached build exists')
 
 	args = parser.parse_args()
 	# print('Arguments:', args)
@@ -499,6 +562,22 @@ def main():
 		image.build()
 		image.after_build()
 		print('[SUCCESS] Image has been created.')
+
+	elif args.command == 'build-podman':
+		assert_packer()
+		assert_docker()
+		assert_podman()
+		services = [s for s in SERVICES if s.name in args.services] if args.services else SERVICES
+		# build services
+		for service in services:
+			if args.rebuild or not service.is_in_cache():
+				service.build()
+			else:
+				print(f'[*] Service {service.name} cached.')
+		builder = PodmanBuilder()
+		builder.set_services(services)
+		builder.build()
+		print('[SUCCESS] Podman image has been created.')
 
 	else:
 		print(f'Invalid command: {args.command}. Use {sys.argv[0]} --help')

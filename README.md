@@ -69,3 +69,26 @@ To build a bundle from an existing ova VM image, run:
 
 Conversion requires root, `libguestfs-tools` must be installed and all VirtualBox VMs must be powered off.
 If a password is given, the archive is encrypted using GnuPG.   
+
+
+
+Orga-hosted cloud images
+------------------------
+Building a cloud-image for orga-hosted Hetzner Cloud is easy.
+
+1. First build the regular vulnbox and the cloud bundle as described above.
+2. `HCLOUD_TOKEN=... packer build vulnbox-cloud.json`
+
+
+### The manual way (deprecated)
+If you (optionally) host vulnboxes as organizer, we provide Hetzner cloud images. 
+These cloud images come with OpenVPN preinstalled that connects to the game network.
+Use cloudinit to provide SSH keys, root password and `/etc/openvpn/vulnbox.conf`.
+Include `sed '/^root/s/:0:0:99999:/:1:0:99999:/' -i /etc/shadow` in cloudinit's `runcmd` to get rid of some "password reset" issues. 
+
+1. First build the regular vulnbox and the cloud bundle as described above.
+2. Create a new Hetzner Cloud Server (Debian), boot it into rescue mode.
+3. Upload the cloud bundle archive and the scripts from `/cloudhosting-scripts` to `/dev/shm` on that machine.
+4. Run `/dev/shm/install_bundle_for_orgahosted_cloud.sh <uploaded-archive.tar.xz>`
+5. Shutdown the server and take a snapshot. This snapshot is your image. 
+

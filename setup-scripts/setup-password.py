@@ -23,9 +23,9 @@ def background_check():
 			time.sleep(1)
 			with open(PASS_FILE, 'r') as f:
 				print('')
-				print('#######################################')
+				print('#########################################')
 				print('##  YOUR NEW PASSWORD: "{}"  ##'.format(f.read()))
-				print('#######################################')
+				print('#########################################')
 			os._exit(0)
 		time.sleep(5)
 
@@ -93,9 +93,9 @@ def change_root_password():
 	new_password = ''.join(r.choice(string.ascii_lowercase + string.digits) for _ in range(12))
 	os.system('echo "root:{}" | chpasswd'.format(new_password))
 	print('')
-	print('#######################################')
+	print('#########################################')
 	print('##  YOUR NEW PASSWORD: "{}"  ##'.format(new_password))
-	print('#######################################')
+	print('#########################################')
 	print('')
 	with open(PASS_FILE, 'w') as f:
 		f.write(new_password)

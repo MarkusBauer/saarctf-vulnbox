@@ -13,13 +13,15 @@ sed -i 's|disable_root: true|disable_root: false|' /etc/cloud/cloud.cfg
 
 
 # Larger screen resolution
-echo 'GRUB_CMDLINE_LINUX_DEFAULT="splash nomodeset"' >> /etc/default/grub
-echo 'GRUB_GFXMODE=1024x768x24' >> /etc/default/grub
-echo 'GRUB_GFXPAYLOAD=1024x768x24' >> /etc/default/grub
-echo 'GRUB_GFXPAYLOAD_LINUX=1024x768x24' >> /etc/default/grub
-echo 'virtio_console' > /etc/initramfs-tools/modules
-update-initramfs -u
-update-grub
+if [ -f /etc/default/grub ]; then
+	echo 'GRUB_CMDLINE_LINUX_DEFAULT="splash nomodeset"' >> /etc/default/grub
+	echo 'GRUB_GFXMODE=1024x768x24' >> /etc/default/grub
+	echo 'GRUB_GFXPAYLOAD=1024x768x24' >> /etc/default/grub
+	echo 'GRUB_GFXPAYLOAD_LINUX=1024x768x24' >> /etc/default/grub
+	echo 'virtio_console' > /etc/initramfs-tools/modules
+	update-initramfs -u
+	update-grub
+fi
 
 
 # Greeter

@@ -13,7 +13,7 @@ builders:
       - "--vsys"
       - '0'
       - "--description"
-      - SaarCTF 2020 Vulnbox (powered by saarsec)
+      - SaarCTF 2021 Vulnbox (powered by saarsec)
       - "--version"
       - 0.0.1 alpha
     output_directory: output-vulnbox
@@ -44,9 +44,13 @@ provisioners:
       #- "./scripts/25_sid.sh"
       - "./scripts/35_append_only.sh"
 
-  - type: file
-    source: frontpage/
-    destination: "/var/www/html/"
+  ## Frontpage:
+  #- type: file
+  #  source: frontpage/
+  #  destination: "/var/www/html/"
+  ## No Frontpage:
+  - type: shell
+    inline: ["rm -f /etc/nginx/sites-enabled/*"]
 
   - type: file
     source: setup-scripts/

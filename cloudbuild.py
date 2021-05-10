@@ -13,7 +13,17 @@ import tarfile
 
 excludes_root = ('proc', 'dev', 'tmp', 'run', 'sys', 'lost+found')
 excludes = ['--exclude', 'root/setup-network.py', '--exclude', 'etc/dhcp/dhclient-exit-hooks.d/setupnetwork']
-new_iptables_rules = ['-A INPUT -p tcp --dport 22 -j ACCEPT', '-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT', '-A INPUT -i eth0 -j DROP']
+new_iptables_rules = [
+	'-A INPUT -p tcp --dport 22 -j ACCEPT',
+	'-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT',
+	'-A INPUT -i eth0 -j DROP',
+	'-A INPUT -i ens1 -j DROP',
+]
+new_iptables6_rules = [
+	'-A INPUT -p tcp --dport 22 -j ACCEPT',
+	'-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT',
+	'-A INPUT -j DROP',
+]
 
 
 def print_filesize(fname: str):
@@ -23,6 +33,8 @@ def print_filesize(fname: str):
 
 
 def filter_bash_profile(member: tarfile.TarInfo, r: io.BufferedReader) -> io.BytesIO:
+	# Remove setup-network
+	# Add setup-password --check
 	lines = r.read().decode().split('\n')
 	lines = [l if 'setup-network.py' not in l else '/root/setup-password.py --check' for l in lines]
 	data = '\n'.join(lines).encode()
@@ -31,6 +43,7 @@ def filter_bash_profile(member: tarfile.TarInfo, r: io.BufferedReader) -> io.Byt
 
 
 def filter_crontab(member: tarfile.TarInfo, r: io.BufferedReader) -> io.BytesIO:
+	# A cronjob is going to install Hetzner packages on the system on first boot
 	lines = r.read().decode().split('\n')
 	lines += ['@reboot root /cloudscripts/install-hetzner-cloud.sh']
 	data = '\n'.join(lines).encode() + b'\n'
@@ -41,6 +54,14 @@ def filter_crontab(member: tarfile.TarInfo, r: io.BufferedReader) -> io.BytesIO:
 def filter_iptables(member: tarfile.TarInfo, r: io.BufferedReader) -> io.BytesIO:
 	content = r.read().decode()
 	content = content.replace('COMMIT', '\n'.join(new_iptables_rules) + '\nCOMMIT')
+	data = content.encode()
+	member.size = len(data)
+	return io.BytesIO(data)
+
+
+def filter_iptables6(member: tarfile.TarInfo, r: io.BufferedReader) -> io.BytesIO:
+	content = r.read().decode()
+	content = content.replace('COMMIT', '\n'.join(new_iptables6_rules) + '\nCOMMIT')
 	data = content.encode()
 	member.size = len(data)
 	return io.BytesIO(data)
@@ -68,6 +89,8 @@ def filter_tar_archive(input_file: str, output_file: str):
 						extracted = filter_crontab(member, extracted)
 					elif member.name == 'etc/iptables/rules.v4':
 						extracted = filter_iptables(member, extracted)
+					elif member.name == 'etc/iptables/rules.v6':
+						extracted = filter_iptables6(member, extracted)
 					elif member.name == 'etc/initramfs-tools/conf.d/resume':
 						extracted = filter_resume(member, extracted)
 					fo.addfile(member, extracted)
@@ -160,6 +183,9 @@ def namespace_magic():
 
 
 if __name__ == '__main__':
+	if len(sys.argv) < 3:
+		print(f'USAGE: sudo {sys.argv[0]} <ova-file> <output-archive> [<password>]', file=sys.stderr)
+		sys.exit(1)
 	# filter_tar_archive('/dev/shm/bundle.tar', '/dev/shm/mod.tar')
 	output_file = sys.argv[2]
 	if output_file.endswith('.gpg'):
