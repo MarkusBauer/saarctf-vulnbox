@@ -4,10 +4,13 @@ set -e
 
 # Terminal colors (yellow in contrast to red/green by usual systems)
 for D in /home/*/.bashrc; do
-	if [ -f "$D" ]; then
-		echo -e "force_color_prompt=yes\n\n$(cat ${D})" > "${D}"
-		sed -i 's|\[01;32m|\[11;33m|' "${D}"
-	fi
+  if [ -f "$D" ]; then
+    owner=$(stat -c '%U' "$D")
+    chown root "$D"
+    sed -i '1s;^;force_color_prompt=yes\n\n;' "$D"  # prepend this line
+    sed -i 's|\[01;32m|\[11;33m|' "$D"
+    chown "$owner" "$D"
+  fi
 done
 
 # Colors for root (bold yellow console)

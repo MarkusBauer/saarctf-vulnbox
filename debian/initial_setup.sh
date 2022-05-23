@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -eux
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -9,9 +9,11 @@ timeout 2 /dev/shm/test-and-configure-aptcache.sh || echo "No cache."
 
 # Install basic software
 apt-get update
-apt-get upgrade -y
-apt-get install -y sudo nano htop wget dkms build-essential module-assistant
-m-a prepare
+apt-get --with-new-pkgs upgrade -y
+#apt-get install -y sudo nano htop wget dkms build-essential module-assistant
+#m-a prepare
+apt-get install -y sudo nano htop wget
+apt-get autoremove -y
 apt-get clean
 
 # Install Virtualbox Guest Additions from CD
@@ -22,11 +24,11 @@ apt-get clean
 # rm -f /dev/shm/*.iso
 
 # Install guest utilities from sid:
-echo 'deb http://http.us.debian.org/debian sid main contrib' > /etc/apt/sources.list.d/sid.list
-apt-get update
-apt-get install virtualbox-guest-dkms
-apt-get clean
-rm -f /etc/apt/sources.list.d/sid.list
+#echo 'deb http://http.us.debian.org/debian sid main contrib' > /etc/apt/sources.list.d/sid.list
+#apt-get update
+#apt-get install virtualbox-guest-dkms
+#apt-get clean
+#rm -f /etc/apt/sources.list.d/sid.list
 
 # Clean proxy config
 rm -f /etc/apt/apt.conf.d/01proxy || true

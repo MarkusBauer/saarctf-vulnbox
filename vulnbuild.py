@@ -138,6 +138,12 @@ class Service:
 		with open(os.path.join(folder, '.gitlab-ci.yml'), 'r') as f:
 			self.ci_config: Dict = yaml.safe_load(f)
 
+	def __lt__(self, other):
+		return self.name.lower() < other.name.lower()
+
+	def __gt__(self, other):
+		return self.name.lower() > other.name.lower()
+
 	def pull(self):
 		if os.path.exists(os.path.join(self.folder, '.git')):
 			print(f'[-] Service {self.name}: pull ...')
@@ -447,6 +453,7 @@ class PodmanBuilder:
 
 BASEPATH = os.path.dirname(os.path.abspath(__file__))
 SERVICES = [Service(os.path.dirname(f)) for f in glob.glob(os.path.join(BASEPATH, 'services', '*', 'install.sh'))]
+SERVICES.sort()
 VULNSCRIPT = os.path.join(BASEPATH, 'vulnbox.yaml')
 TESTSCRIPT = os.path.join(BASEPATH, 'testbox.yaml')
 ROUTERSCRIPT = os.path.join(BASEPATH, 'router.yaml')
@@ -489,7 +496,7 @@ def main():
 	args = parser.parse_args()
 	# print('Arguments:', args)
 
-	baseimage = DebianVMImage(os.path.join(BASEPATH, 'debian', 'buster.json'), 'saarctf-vulnbox-base.ova')
+	baseimage = DebianVMImage(os.path.join(BASEPATH, 'debian', 'bullseye.json'), 'saarctf-vulnbox-base.ova')
 	images = {
 		'vulnbox': MainVMImage(VULNSCRIPT, 'saarctf-vulnbox.ova'),
 		'testbox': MainVMImage(TESTSCRIPT, 'saarctf-testbox.ova'),

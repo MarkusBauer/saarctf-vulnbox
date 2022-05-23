@@ -13,7 +13,7 @@ builders:
       - "--vsys"
       - '0'
       - "--description"
-      - SaarCTF 2021 Router (powered by saarsec)
+      - SaarCTF 2022 Router (powered by saarsec)
       - "--version"
       - 0.0.1 alpha
     output_directory: output-router

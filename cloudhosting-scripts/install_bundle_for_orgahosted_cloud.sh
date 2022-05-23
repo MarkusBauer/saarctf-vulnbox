@@ -9,11 +9,20 @@ fi
 ARCHIVE=$(realpath "$1")
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+export DEBIAN_FRONTEND=noninteractive
+
 
 # Mount HDD
 if [ -d "/mnt/dev" ]; then
   echo 'Drive already mounted'
 else
+  # Grow partition
+  apt install -y cloud-guest-utils
+  growpart /dev/sda 1
+  e2fsck -a -f /dev/sda1
+  resize2fs /dev/sda1
+
+  # mount it
   mount /dev/sda1 /mnt
 fi
 

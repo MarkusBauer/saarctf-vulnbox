@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 # Clear APT
+apt-get update
+apt-get --with-new-pkgs upgrade -y
+apt-get remove -y linux-image-5.10.0-13-amd64
 apt-get autoremove -y
 apt-get clean
 rm -f /etc/apt/apt.conf.d/01proxy || true  # remove configured caching proxy

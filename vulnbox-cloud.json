@@ -5,7 +5,7 @@
   "builders": [
     {
       "type": "hcloud",
-      "image": "debian-10",
+      "image": "debian-11",
       "location": "fsn1",
       "server_type": "cx11",
       "server_name": "vulnbox",
@@ -16,6 +16,12 @@
     }
   ],
   "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "mount -o remount,size=1250M /dev/shm"
+      ]
+    },
     {
       "type": "file",
       "source": "cloudhosting-scripts/",
