@@ -6,3 +6,6 @@ packer_cache
 /.idea/
 /.build_cache/
 .tmp-*.json
+**/.doit.db
+__pycache__
+/projects/*/services/*

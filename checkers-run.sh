@@ -13,7 +13,7 @@ fi
 
 echo "Testing all service checkers against $TARGET ..."
 
-for d in services/*/ ; do
+for d in projects/$PROJECT_NAME/services/*/ ; do
   servicename=$(basename "$d")
   echo ""
   echo "=== Checking service '$servicename' ==="

@@ -1,0 +1,31 @@
+services:
+  vulnbox:
+    container_name: vulnbox
+    hostname: vulnbox
+    image: vulnbox
+    # Systemd shenanigans
+    # Needs "userns-remap": "default" in daemon.json
+    # Source: https://github.com/moby/moby/issues/42275#issuecomment-1694995128
+    stop_signal: SIGRTMIN+3
+    command: /sbin/init
+    cap_add:
+      # Allow control of container interface (iptables)
+      - NET_ADMIN
+      # Allow netstat / ss to show processes which listen on ports
+      - SYS_PTRACE
+    volumes:
+      - type: tmpfs
+        target: /run
+      - type: tmpfs
+        target: /run/lock
+      - type: tmpfs
+        target: /tmp
+    # Resource limits:
+    deploy:
+      mode: global # Do not allow replication
+      resources:
+        limits:
+          cpus: "1"
+          memory: "4GB"
+          # Maybe bump pid_max on the host?
+          pids: 10000

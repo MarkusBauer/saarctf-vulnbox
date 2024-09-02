@@ -1,0 +1,12 @@
+title: Workshop CTF
+vm_builder: docker
+
+services:
+  # services in <project-dir>/services/ are automatically included.
+  # you can list some services that will be git cloned for you
+  - name: myspray
+    remote: "ssh://git@gitlab.saarsec.rocks:2222/ad-services/myspray.git"
+  - name: rapid
+    remote: "ssh://git@gitlab.saarsec.rocks:2222/ad-services/rapid.git"
+  - name: binby
+    remote: "ssh://git@gitlab.saarsec.rocks:2222/ad-services/binby.git"

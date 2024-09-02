@@ -5,10 +5,10 @@
 set -eu
 
 # install the hetzner cloud package
-if [ -f /cloudscripts/install-hetzner-cloud.sh ]; then
-  /cloudscripts/install-hetzner-cloud.sh
+if [ -f /cloud-scripts/install-hetzner-cloud.sh ]; then
+  /cloud-scripts/install-hetzner-cloud.sh
 fi
-rm -rf /cloudscripts
+rm -rf /cloud-scripts
 sed '/install-hetzner-cloud.sh/d' -i /etc/crontab
 
 # install openvpn etc

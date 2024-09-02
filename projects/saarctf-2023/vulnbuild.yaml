@@ -1,0 +1,32 @@
+title: saarCTF 2023
+vm_builder: virtualbox
+
+uploads:
+  - task: vm:router
+    host: saarsec
+    path: /opt/saarctf-webpage/mainpage/static/vm/2023-uploadtest/
+    chmod: 0644
+  - task: vm:testbox
+    host: saarsec
+    path: /opt/saarctf-webpage/mainpage/static/vm/2023-uploadtest/
+    chmod: 0644
+  - task: vm:testbox:cloudbundle
+    host: saarsec
+    path: /opt/saarctf-webpage/mainpage/static/vm/2023-uploadtest/
+    chmod: 0644
+  - task: vm:vulnbox:7z
+    host: saarsec
+    path: /opt/saarctf-webpage/mainpage/static/vm/2023-uploadtest/
+    chmod: 0644
+  - task: vm:vulnbox:cloudbundle:gpg
+    host: saarsec
+    path: /opt/saarctf-webpage/mainpage/static/vm/2023-uploadtest/
+    chmod: 0644
+
+services:
+  # services in <project-dir>/services/ are automatically included.
+  # you can list some services that will be git cloned for you
+  - name: example_service
+    remote: "ssh://git@gitlab.saarsec.rocks:2222/saarctf/example_service.git"
+  - name: turing_machines
+    remote: "ssh://git@gitlab.saarsec.rocks:2222/MarkusBauer/turing-machines.git"
