@@ -55,8 +55,10 @@ def configure_interface(team_id: int) -> None:
 		broadcast {get_ip(team_id, 255)}
 		gateway {get_ip(team_id, 1)}
 		# add default routes for team VPN on router VM
-		post-up /bin/ip route add {get_ip(team_id, 192)}/26 via {get_ip(team_id, 1)} dev {INTERFACE}
-		pre-down /bin/ip route del {get_ip(team_id, 192)}/26 via {get_ip(team_id, 1)} dev {INTERFACE}
+		post-up /bin/ip route add {get_ip(team_id, 128)}/25 via {get_ip(team_id, 1)} dev {INTERFACE}
+		pre-down /bin/ip route del {get_ip(team_id, 128)}/25 via {get_ip(team_id, 1)} dev {INTERFACE}
+		post-up /bin/ip route add {get_ip(team_id, 64)}/26 via {get_ip(team_id, 1)} dev {INTERFACE}
+		pre-down /bin/ip route del {get_ip(team_id, 64)}/26 via {get_ip(team_id, 1)} dev {INTERFACE}
 	'''.replace('\n\t', '\n')
 	with open(f'/etc/network/interfaces.d/{INTERFACE}.conf', 'w') as f:
 		f.write(text)

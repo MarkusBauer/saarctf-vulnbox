@@ -5,9 +5,9 @@
   "builders": [
     {
       "type": "hcloud",
-      "image": "debian-11",
+      "image": "debian-12",
       "location": "fsn1",
-      "server_type": "cx11",
+      "server_type": "cx22",
       "server_name": "vulnbox",
       "snapshot_name": "vulnbox",
       "poll_interval": "1000ms",

@@ -2,7 +2,7 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
-apt-get install -y openvpn isc-dhcp-server iptables-persistent \
+apt-get install -y openvpn wireguard wireguard-tools isc-dhcp-server iptables-persistent \
 		bmon iftop iptraf nload pktstat
 ln -s /usr/bin/nload /usr/sbin/iftop /usr/sbin/iptraf /usr/bin/bmon /usr/sbin/pktstat /root/
 

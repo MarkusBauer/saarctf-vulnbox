@@ -44,7 +44,7 @@ source "virtualbox-ovf" "testbox" {
     format               = "ova"
     guest_additions_mode = "disable"
     headless             = true
-    keep_registered      = true
+    keep_registered      = false
     output_directory     = "output-testbox"
     shutdown_command     = "echo 'packer' | shutdown -P now"
     source_path          = "${var.debian_ova_file}"

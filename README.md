@@ -88,8 +88,8 @@ Building a cloud-image for orga-hosted Hetzner Cloud is easy.
 ### The manual way (deprecated)
 
 If you (optionally) host vulnboxes as organizer, we provide Hetzner cloud images.
-These cloud images come with OpenVPN preinstalled that connects to the game network.
-Use cloudinit to provide SSH keys, root password and `/etc/openvpn/vulnbox.conf`.
+These cloud images come with WireGuard preinstalled that connects to the game network.
+Use cloudinit to provide SSH keys, root password and `/etc/wireguard/vulnbox.conf`.
 Include `sed '/^root/s/:0:0:99999:/:1:0:99999:/' -i /etc/shadow` in cloudinit's `runcmd` to get rid of some "password reset" issues.
 
 1. First build the regular vulnbox and the cloud bundle as described above.

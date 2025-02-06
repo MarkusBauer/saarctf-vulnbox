@@ -17,7 +17,7 @@ if [ -d "/mnt/dev" ]; then
   echo 'Drive already mounted'
 else
   # Grow partition
-  apt install -y cloud-guest-utils
+  apt-get install -y cloud-guest-utils
   growpart /dev/sda 1
   e2fsck -a -f /dev/sda1
   resize2fs /dev/sda1

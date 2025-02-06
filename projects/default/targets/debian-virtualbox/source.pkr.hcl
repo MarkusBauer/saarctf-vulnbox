@@ -9,24 +9,25 @@ packer {
 
 variable "debian_version" {
 	type    = string
-	default = "12.2.0"
+	default = "12.7.0"
 }
 
 source "virtualbox-iso" "vulnbox-debian" {
 	boot_command = [
-		"<esc><wait>",
-		"install <wait>",
-		"preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
-		"debian-installer=en_US <wait>",
-		"auto <wait>",
-		"locale=en_US <wait>",
-		"kbd-chooser/method=us <wait>",
-		"keyboard-configuration/xkb-keymap=us <wait>",
-		"netcfg/get_hostname=saarctf-vulnbox <wait>",
-		"netcfg/get_domain=saarctf <wait>",
-		"netcfg/hostname=saarctf-vulnbox <wait>",
-		"netcfg/domain=saarctf <wait>",
-		"<enter><wait>"
+		"<wait><esc><wait>auto preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg netcfg/get_hostname={{ .Name }}<enter>"
+        # "<esc><wait>",
+		# "install <wait>",
+		# "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+		# "debian-installer=en_US <wait>",
+		# "auto <wait>",
+		# "locale=en_US <wait>",
+		# "kbd-chooser/method=us <wait>",
+		# "keyboard-configuration/xkb-keymap=us <wait>",
+		# "netcfg/get_hostname=saarctf-vulnbox <wait>",
+		# "netcfg/get_domain=saarctf <wait>",
+		# "netcfg/hostname=saarctf-vulnbox <wait>",
+		# "netcfg/domain=saarctf <wait>",
+		# "<enter><wait>"
 	]
 	boot_wait            = "10s"
 	disk_size            = 51200
@@ -45,9 +46,15 @@ source "virtualbox-iso" "vulnbox-debian" {
 	ssh_port             = 22
 	ssh_username         = "root"
 	ssh_wait_timeout     = "10000s"
+    # firmware = "efi"
 	vboxmanage           = [
-		["modifyvm", "{{ .Name }}", "--memory", "2048"], ["modifyvm", "{{ .Name }}", "--vram", "16"], ["modifyvm", "{{ .Name }}", "--cpus", "4"],
-		["modifyvm", "{{ .Name }}", "--audio", "none"], ["modifyvm", "{{ .Name }}", "--rtcuseutc", "on"]
+		["modifyvm", "{{ .Name }}", "--memory", "2048"],
+        ["modifyvm", "{{ .Name }}", "--vram", "16"],
+        ["modifyvm", "{{ .Name }}", "--cpus", "4"],
+		["modifyvm", "{{ .Name }}", "--audio", "none"],
+        ["modifyvm", "{{ .Name }}", "--rtcuseutc", "on"],
+        # https://github.com/hashicorp/packer/issues/12118#issuecomment-1337627122
+        ["modifyvm", "{{ .Name }}", "--nat-localhostreachable1", "on"],  # workaround
 	]
 	vm_name = "saarctf-vulnbox-base"
 }

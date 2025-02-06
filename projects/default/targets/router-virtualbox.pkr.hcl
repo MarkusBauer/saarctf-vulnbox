@@ -14,7 +14,7 @@ variable "project_name" {
 
 variable "project_version" {
     type    = string
-    default = "0.0.1"
+    default = "0.0.2"
 }
 
 variable "project_output_dir" {
@@ -48,7 +48,7 @@ source "virtualbox-ovf" "router" {
     format               = "ova"
     guest_additions_mode = "disable"
     headless             = true
-    keep_registered      = true
+    keep_registered      = false
     output_directory     = "output-router"
     shutdown_command     = "echo 'packer' | shutdown -P now"
     source_path          = "${var.debian_ova_file}"
@@ -63,6 +63,7 @@ source "virtualbox-ovf" "router" {
         ["modifyvm", "{{.Name}}", "--bridgeadapter2", "${var.physical_interface}"],
         ["modifyvm", "{{.Name}}", "--natpf1", "ssh,tcp,127.0.0.1,22222,,22"],
         ["modifyvm", "{{.Name}}", "--natpf1", "OpenVPN for Team-Members,udp,0.0.0.0,1194,,1194"],
+        ["modifyvm", "{{.Name}}", "--natpf1", "Wireguard for Team-Members,udp,0.0.0.0,51820,,51820"],
     ]
     vm_name = "saarctf-${var.target_name}"
 }

@@ -14,11 +14,11 @@ class SshKeyTask(BuildTask):
 
     @property
     def private_key_file(self) -> Path:
-        return self.project.output_dir / 'ssh_vulnbox'
+        return self.project.output_dir / 'saarctf_vulnbox'
 
     @property
     def public_key_file(self) -> Path:
-        return self.project.output_dir / 'ssh_vulnbox.pub'
+        return self.project.output_dir / 'saarctf_vulnbox.pub'
 
 
 class SshKeyBuilder(Builder[SshKeyTask]):

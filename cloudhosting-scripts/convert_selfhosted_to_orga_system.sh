@@ -11,22 +11,16 @@ fi
 rm -rf /cloud-scripts
 sed '/install-hetzner-cloud.sh/d' -i /etc/crontab
 
-# install openvpn etc
+# install wireguard etc
 apt-get update
-apt-get install -y openvpn
-systemctl enable openvpn@vulnbox
+apt-get install -y wireguard
+systemctl enable wg-quick@vulnbox
 
-# auto restart openvpn
-mkdir -p /etc/systemd/system/openvpn-client@.service.d
-mkdir -p /etc/systemd/system/openvpn@.service.d
-cat > /etc/systemd/system/openvpn-client@.service.d/override.conf <<'EOF'
+# auto restart wireguard
+mkdir -p /etc/systemd/system/wg-quick@.service.d
+cat > /etc/systemd/system/wg-quick@.service.d/override.conf <<'EOF'
 [Service]
-Restart=always
-RestartSec=5
-EOF
-cat > /etc/systemd/system/openvpn@.service.d/override.conf <<'EOF'
-[Service]
-Restart=always
+Restart=on-failure
 RestartSec=5
 EOF
 

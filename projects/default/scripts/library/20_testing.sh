@@ -6,9 +6,9 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
-sed -i '/deb-src /d' /etc/apt/sources.list
 mv /etc/apt/sources.list /etc/apt/sources.list.d/stable.list
-sed -e s/stretch/buster/g /etc/apt/sources.list.d/stable.list > /etc/apt/sources.list.d/testing.list
+sed -i '/deb-src /d' /etc/apt/sources.list.d/stable.list
+sed -e s/bullseye/trixie/g /etc/apt/sources.list.d/stable.list > /etc/apt/sources.list.d/testing.list
 
 echo 'Package: *'             >  /etc/apt/preferences.d/stable.pref
 echo 'Pin: release a=stable'  >> /etc/apt/preferences.d/stable.pref

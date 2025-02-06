@@ -1,9 +1,22 @@
+import json
+import os
 import sys
 from typing import Iterable
 
 import doit  # type: ignore
 
+from vulnbuild.config import GlobalConfig
 from vulnbuild.tasks import TaskCreatorFactory
+
+
+def import_credentials() -> None:
+    try:
+        data = (GlobalConfig.base / 'credentials.json').read_text()
+    except FileNotFoundError:
+        return
+    for k, v in json.loads(data).items():
+        if k not in os.environ:
+            os.environ[k] = v
 
 
 class CliChecker:
@@ -38,6 +51,7 @@ class CliChecker:
 
 
 def main() -> None:
+    import_credentials()
     try:
         CliChecker().ensure_valid_args(sys.argv[1:])
     except ValueError as e:

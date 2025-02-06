@@ -46,7 +46,7 @@ class CloudImageConverter(Converter[CloudImageTask]):
             print('[!] You should have set the environment variable "HCLOUD_TOKEN"')
             raise Exception('Missing Hetzner Token (HCLOUD_TOKEN=...)')
 
-        subprocess.check_call(['packer', 'build', 'vulnbox-cloud.json', '-var', f'archive_file={task.bundle_file.absolute()}'],
+        subprocess.check_call(['packer', 'build', '-var', f'archive_file={task.bundle_file.absolute()}', 'vulnbox-cloud.json'],
                               cwd=GlobalConfig.base)
 
         print(f'[*] Created cloud image.')

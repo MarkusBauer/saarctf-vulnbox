@@ -58,3 +58,12 @@ if [[ -f /root/setup-network.py ]]; then
   echo 'fi' >> /etc/dhcp/dhclient-exit-hooks.d/setupnetwork
   chmod +x /etc/dhcp/dhclient-exit-hooks.d/setupnetwork
 fi
+
+
+# new files/folders in some folders should not be world-readable by default
+# this might or might not prevent people from stealing pcaps
+setfacl -d -m o::- /tmp
+setfacl -d -m o::- /var/tmp
+setfacl -d -m o::- /opt
+setfacl -d -m o::- /mnt
+setfacl -d -m o::- /media
